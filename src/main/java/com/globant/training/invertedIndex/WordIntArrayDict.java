@@ -35,7 +35,16 @@ public class WordIntArrayDict implements Writable {
 	
 	public void addValue(Text k, IntWritable i) {
 		HashSet<IntWritable> dummyList = data.get(k);
+		Boolean nullList = false;
+
+		if(dummyList == null) {
+			dummyList = new HashSet<IntWritable>();
+			nullList = true;
+		}
 		dummyList.add(i);
+		if(nullList) {
+			data.put(k,  dummyList);
+		}
 	}
 	public void addValues(Text k, HashSet<IntWritable> arr) {
 		HashSet<IntWritable> dummyList = data.get(k);
@@ -96,13 +105,12 @@ public class WordIntArrayDict implements Writable {
 		}		
 	}
 	
+	@Override
 	public int hashCode() {
-		int hash = 0;
-		for(Text k : data.keySet()) {
-			hash += k.hashCode();
-		}
-
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		return result;
 	}
 
 	public String toString() {
@@ -129,6 +137,23 @@ public class WordIntArrayDict implements Writable {
 		}	
 		String output = tmp.toString();		
 		return  output;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WordIntArrayDict other = (WordIntArrayDict) obj;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		
+		return true;
 	}
 	
 
